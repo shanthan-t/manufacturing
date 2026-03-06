@@ -1058,10 +1058,11 @@ body { min-height: 100vh; background: var(--color-bg); }
 
 /* ── Stats Section ────────────────────────────────────────────── */
 .landing-stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 24px; max-width: 900px; width: 100%;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 24px; max-width: 600px; width: 100%;
   padding: 0 32px 80px;
   position: relative; z-index: 2;
+  margin: 0 auto;
 }
 .landing-stat-item {
   display: flex; flex-direction: column;

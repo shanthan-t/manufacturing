@@ -110,8 +110,6 @@ function FeatureCard({ icon, title, desc, index }) {
 function StatsSection() {
     const stats = [
         { value: 20, suffix: '+', label: 'Machines Monitored' },
-        { value: 99, suffix: '%', label: 'Prediction Accuracy' },
-        { value: 4, suffix: '', label: 'Production Lines' },
         { value: 24, suffix: '/7', label: 'Real-time Monitoring' },
     ]
 
