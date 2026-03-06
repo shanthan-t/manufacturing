@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useFactory } from '../hooks/useFactory'
 import { getMachineShortLabel } from '../utils/machineNames'
 import DataSourceSelector from '../components/DataSourceSelector'
+import SimulatorWidget from '../components/SimulatorWidget'
 
 const pageTransition = {
     initial: { opacity: 0, y: 20 },
@@ -165,6 +166,9 @@ export default function OverviewPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Blast Radius Simulator Widget */}
+            <SimulatorWidget />
         </motion.div>
     )
 }
