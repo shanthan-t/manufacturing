@@ -1,6 +1,6 @@
 #!/bin/bash
 # ──────────────────────────────────────────────────────────────
-#  CascadeGuard — Start Script
+#  Vortex — Start Script
 #  Launches backend (FastAPI) and frontend (Vite) together.
 # ──────────────────────────────────────────────────────────────
 
@@ -24,7 +24,7 @@ NC="\033[0m"
 
 echo -e "${CYAN}"
 echo "  ╔══════════════════════════════════════════════════╗"
-echo "  ║   CascadeGuard — AI Failure Propagation Intel    ║"
+echo "  ║   Vortex — AI Failure Propagation Intel    ║"
 echo "  ╚══════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

@@ -39,7 +39,7 @@ export default function Layout({ children }) {
         <>
             <nav className="navbar">
                 <div className="navbar-brand">
-                    Cascade<span>Guard</span>
+                    Vortex
                 </div>
 
                 <div className="navbar-links" ref={navLinksRef}>

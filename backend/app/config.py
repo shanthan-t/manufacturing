@@ -1,5 +1,5 @@
 """
-CascadeGuard Configuration
+Vortex Configuration
 """
 import os
 from pathlib import Path

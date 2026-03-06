@@ -26,7 +26,7 @@ export default function Header({ riskSummary }) {
                     </svg>
                 </div>
                 <div>
-                    <h1 className="header-title">CascadeGuard</h1>
+                    <h1 className="header-title">Vortex</h1>
                     <p className="header-subtitle">AI Failure Propagation Intelligence</p>
                 </div>
             </div>

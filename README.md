@@ -1,4 +1,4 @@
-# CascadeGuard — AI Failure Propagation Intelligence Platform
+# Vortex — AI Failure Propagation Intelligence Platform
 
 An AI-powered manufacturing intelligence system that predicts machine failures and simulates cascade failure propagation across a factory dependency graph.
 

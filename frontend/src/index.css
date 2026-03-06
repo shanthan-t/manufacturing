@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-/* ── CascadeGuard Dark Blue Design Tokens ────────────────────── */
+/* ── Vortex Dark Blue Design Tokens ────────────────────── */
 @theme {
   --color-bg: #05060A;
   --color-surface: #0B0F1A;

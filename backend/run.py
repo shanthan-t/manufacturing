@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CascadeGuard — Backend launcher.
+Vortex — Backend launcher.
 """
 import uvicorn
 from app.config import API_HOST, API_PORT

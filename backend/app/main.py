@@ -1,5 +1,5 @@
 """
-CascadeGuard — AI Failure Propagation Intelligence Platform
+Vortex — AI Failure Propagation Intelligence Platform
 FastAPI main application entry point.
 """
 import time
@@ -36,7 +36,7 @@ async def reinitialize_system(train_df, test_df, rul_df):
     When in 'synthetic' mode, uses the hardcoded FACTORY_LINES config.
     """
     print("\n" + "=" * 60)
-    print("  CascadeGuard — Re-initializing with new data source")
+    print("  Vortex — Re-initializing with new data source")
     print("=" * 60 + "\n")
 
     start = time.time()
@@ -163,7 +163,7 @@ async def reinitialize_system(train_df, test_df, rul_df):
     summary = risk_engine.get_factory_summary()
     mode_label = data_manager.mode if data_manager else "synthetic"
     print(f"\n{'=' * 60}")
-    print(f"  CascadeGuard — Re-initialized ({elapsed:.1f}s)")
+    print(f"  Vortex — Re-initialized ({elapsed:.1f}s)")
     print(f"  Machines: {len(factory_graph.get_all_machines())}")
     print(f"  Factory Health: {summary['avg_health_score']:.1%}")
     print(f"  Data Source: {mode_label}")
@@ -174,7 +174,7 @@ async def reinitialize_system(train_df, test_df, rul_df):
 async def lifespan(app: FastAPI):
     """Initialize all components on startup."""
     print("\n" + "=" * 60)
-    print("  CascadeGuard — Initializing System")
+    print("  Vortex — Initializing System")
     print("=" * 60 + "\n")
 
     start = time.time()
@@ -300,7 +300,7 @@ async def lifespan(app: FastAPI):
 
     elapsed = time.time() - start
     print(f"\n{'=' * 60}")
-    print(f"  CascadeGuard — System Ready ({elapsed:.1f}s) — 12 modules")
+    print(f"  Vortex — System Ready ({elapsed:.1f}s) — 12 modules")
     print(f"  Machines: {len(factory_graph.get_all_machines())}")
     summary = risk_engine.get_factory_summary()
     print(f"  Factory Health: {summary['avg_health_score']:.1%}")
@@ -316,7 +316,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app
 app = FastAPI(
-    title="CascadeGuard",
+    title="Vortex",
     description="AI Failure Propagation Intelligence Platform",
     version="1.0.0",
     lifespan=lifespan,
@@ -358,7 +358,7 @@ app.include_router(data_router)
 @app.get("/")
 async def root():
     return {
-        "name": "CascadeGuard",
+        "name": "Vortex",
         "version": "1.0.0",
         "description": "AI Failure Propagation Intelligence Platform",
         "status": "operational",

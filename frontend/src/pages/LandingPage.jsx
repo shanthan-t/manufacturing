@@ -1,7 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCallback, useRef, useState, useEffect } from 'react'
-import Hyperspeed from '../components/Hyperspeed'
 
 /* ── Animated counter hook ────────────────────────────────────── */
 function useCountUp(target, duration = 2000, startOnView = true) {
@@ -142,7 +141,7 @@ function StatsSection() {
 /* ── About section ────────────────────────────────────────────── */
 function AboutSection() {
     const steps = [
-        { num: '01', title: 'Ingest Sensor Data', desc: 'CascadeGuard connects to your factory sensor feeds — vibration, temperature, pressure, voltage — and continuously collects machine health signals.' },
+        { num: '01', title: 'Ingest Sensor Data', desc: 'Vortex connects to your factory sensor feeds — vibration, temperature, pressure, voltage — and continuously collects machine health signals.' },
         { num: '02', title: 'AI-Powered Analysis', desc: 'Machine learning models analyze multi-dimensional sensor patterns to detect anomalies and predict remaining useful life for each machine.' },
         { num: '03', title: 'Cascade Simulation', desc: 'Our dependency graph engine maps how failures propagate across interconnected production line machines, quantifying blast radius and economic exposure.' },
         { num: '04', title: 'Actionable Intelligence', desc: 'Receive AI-ranked maintenance priorities, root cause explanations, and optimized repair schedules — all before costly downtime strikes.' },
@@ -160,7 +159,7 @@ function AboutSection() {
                 <span className="landing-section-badge">How It Works</span>
                 <h2 className="landing-about-title">From Sensor Data to <br />Predictive Intelligence</h2>
                 <p className="landing-about-subtitle">
-                    CascadeGuard transforms raw machine telemetry into actionable maintenance decisions using a four-stage AI pipeline.
+                    Vortex transforms raw machine telemetry into actionable maintenance decisions using a four-stage AI pipeline.
                 </p>
             </motion.div>
 
@@ -222,45 +221,8 @@ export default function LandingPage() {
     return (
         <div className="landing-page">
             {/* Background effects */}
-            <Hyperspeed
-                effectOptions={{
-                    onSpeedUp: () => { },
-                    onSlowDown: () => { },
-                    distortion: 'turbulentDistortion',
-                    length: 400,
-                    roadWidth: 10,
-                    islandWidth: 2,
-                    lanesPerRoad: 3,
-                    fov: 90,
-                    fovSpeedUp: 150,
-                    speedUp: 2,
-                    carLightsFade: 0.4,
-                    totalSideLightSticks: 20,
-                    lightPairsPerRoadWay: 30,
-                    shoulderLinesWidthPercentage: 0.05,
-                    brokenLinesWidthPercentage: 0.1,
-                    brokenLinesLengthPercentage: 0.5,
-                    lightStickWidth: [0.12, 0.5],
-                    lightStickHeight: [1.3, 1.7],
-                    movingAwaySpeed: [60, 80],
-                    movingCloserSpeed: [-120, -160],
-                    carLightsLength: [400 * 0.03, 400 * 0.2],
-                    carLightsRadius: [0.05, 0.14],
-                    carWidthPercentage: [0.3, 0.5],
-                    carShiftX: [-0.8, 0.8],
-                    carFloorSeparation: [0, 5],
-                    colors: {
-                        roadColor: 0x05060A,
-                        islandColor: 0x05060A,
-                        background: 0x05060A,
-                        shoulderLines: 0x131318,
-                        brokenLines: 0x131318,
-                        leftCars: [0x3B82F6, 0x4F6BFF, 0x8B5CF6], /* Blue/Purple theme */
-                        rightCars: [0x22C55E, 0x10B981, 0x059669], /* Success Green theme */
-                        sticks: 0x3B82F6,
-                    }
-                }}
-            />
+            <div className="landing-bg-glow landing-bg-glow-1" />
+            <div className="landing-bg-glow landing-bg-glow-2" />
             <Particles />
 
             {/* ─── Hero ─────────────────────────────────────── */}
@@ -280,7 +242,7 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
                 >
-                    CascadeGuard
+                    Vortex
                 </motion.h1>
 
                 <motion.p
@@ -298,7 +260,7 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                    CascadeGuard analyzes machine sensor data to predict failures, simulate cascade
+                    Vortex analyzes machine sensor data to predict failures, simulate cascade
                     impacts across production lines, and provide AI-driven maintenance insights
                     before costly downtime occurs.
                 </motion.p>
@@ -373,7 +335,7 @@ export default function LandingPage() {
             >
                 <h2 className="landing-bottom-title">Ready to prevent costly downtime?</h2>
                 <p className="landing-bottom-desc">
-                    Explore the CascadeGuard dashboard to see real-time AI predictions,
+                    Explore the Vortex dashboard to see real-time AI predictions,
                     cascade simulations, and maintenance intelligence in action.
                 </p>
                 <Link to="/dashboard" className="landing-cta">
@@ -384,7 +346,7 @@ export default function LandingPage() {
 
             {/* ─── Footer ───────────────────────────────────── */}
             <footer className="landing-footer">
-                <span>CascadeGuard</span>
+                <span>Vortex</span>
                 <span className="landing-footer-sep">·</span>
                 <span>AI Failure Propagation Intelligence</span>
             </footer>
