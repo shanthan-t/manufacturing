@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCallback, useRef, useState, useEffect } from 'react'
+import Hyperspeed from '../components/Hyperspeed'
 
 /* ── Animated counter hook ────────────────────────────────────── */
 function useCountUp(target, duration = 2000, startOnView = true) {
@@ -221,8 +222,45 @@ export default function LandingPage() {
     return (
         <div className="landing-page">
             {/* Background effects */}
-            <div className="landing-bg-glow landing-bg-glow-1" />
-            <div className="landing-bg-glow landing-bg-glow-2" />
+            <Hyperspeed
+                effectOptions={{
+                    onSpeedUp: () => { },
+                    onSlowDown: () => { },
+                    distortion: 'turbulentDistortion',
+                    length: 400,
+                    roadWidth: 10,
+                    islandWidth: 2,
+                    lanesPerRoad: 3,
+                    fov: 90,
+                    fovSpeedUp: 150,
+                    speedUp: 2,
+                    carLightsFade: 0.4,
+                    totalSideLightSticks: 20,
+                    lightPairsPerRoadWay: 30,
+                    shoulderLinesWidthPercentage: 0.05,
+                    brokenLinesWidthPercentage: 0.1,
+                    brokenLinesLengthPercentage: 0.5,
+                    lightStickWidth: [0.12, 0.5],
+                    lightStickHeight: [1.3, 1.7],
+                    movingAwaySpeed: [60, 80],
+                    movingCloserSpeed: [-120, -160],
+                    carLightsLength: [400 * 0.03, 400 * 0.2],
+                    carLightsRadius: [0.05, 0.14],
+                    carWidthPercentage: [0.3, 0.5],
+                    carShiftX: [-0.8, 0.8],
+                    carFloorSeparation: [0, 5],
+                    colors: {
+                        roadColor: 0x05060A,
+                        islandColor: 0x05060A,
+                        background: 0x05060A,
+                        shoulderLines: 0x131318,
+                        brokenLines: 0x131318,
+                        leftCars: [0x3B82F6, 0x4F6BFF, 0x8B5CF6], /* Blue/Purple theme */
+                        rightCars: [0x22C55E, 0x10B981, 0x059669], /* Success Green theme */
+                        sticks: 0x3B82F6,
+                    }
+                }}
+            />
             <Particles />
 
             {/* ─── Hero ─────────────────────────────────────── */}
