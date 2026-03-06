@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCallback, useRef, useState, useEffect } from 'react'
+import BlurText from '../components/BlurText'
 
 /* ── Animated counter hook ────────────────────────────────────── */
 function useCountUp(target, duration = 2000, startOnView = true) {
@@ -236,34 +237,24 @@ export default function LandingPage() {
                     AI-Powered Industrial Intelligence
                 </motion.div>
 
-                <motion.h1
+                <BlurText
+                    text="CascadeGuard"
+                    delay={100}
+                    animateBy="letters"
                     className="landing-title"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-                >
-                    CascadeGuard
-                </motion.h1>
+                />
 
-                <motion.p
+                <BlurText
+                    text="AI-Powered Predictive Maintenance and Factory Intelligence Platform"
+                    delay={50}
                     className="landing-subtitle"
-                    initial={{ opacity: 0, y: 25 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                    AI-Powered Predictive Maintenance and<br />Factory Intelligence Platform
-                </motion.p>
+                />
 
-                <motion.p
+                <BlurText
+                    text="CascadeGuard analyzes machine sensor data to predict failures, simulate cascade impacts across production lines, and provide AI-driven maintenance insights before costly downtime occurs."
+                    delay={20}
                     className="landing-desc"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                >
-                    CascadeGuard analyzes machine sensor data to predict failures, simulate cascade
-                    impacts across production lines, and provide AI-driven maintenance insights
-                    before costly downtime occurs.
-                </motion.p>
+                />
 
                 <motion.div
                     className="landing-cta-group"
