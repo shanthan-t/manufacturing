@@ -1,5 +1,6 @@
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { useApi } from '../hooks/useApi'
+import { useFactory } from '../hooks/useFactory'
 import { getMachineShortLabel } from '../utils/machineNames'
 
 const pageTransition = {
@@ -15,7 +16,7 @@ function riskColor(prob) {
 }
 
 export default function MaintenancePage() {
-    const { data: priorities, loading } = useApi('/maintenance/priorities')
+    const { maintenance: priorities, loading } = useFactory()
 
     if (loading) {
         return (

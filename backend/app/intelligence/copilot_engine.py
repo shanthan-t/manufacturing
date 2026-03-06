@@ -170,33 +170,6 @@ class CopilotEngine:
 
         self.active_providers = []
 
-        # ── Try OpenRouter ────────────────────────────────────────
-        openrouter_key = os.environ.get("OPENROUTER_API_KEY")
-        if openrouter_key:
-            try:
-                from openai import OpenAI
-                self.openrouter_client = OpenAI(
-                    base_url="https://openrouter.ai/api/v1",
-                    api_key=openrouter_key
-                )
-                self.openrouter_model = "meta-llama/llama-3.3-70b-instruct"
-                self.active_providers.append("openrouter")
-                print(f"  ✅ GenAI Copilot: OpenRouter connected ({self.openrouter_model})")
-            except Exception as e:
-                print(f"  ⚠️  OpenRouter init failed ({e})")
-
-        # ── Try Gemini ─────────────────────────────────
-        gemini_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-        if gemini_key:
-            try:
-                from google import genai
-                self.gemini_client = genai.Client(api_key=gemini_key)
-                self.gemini_model = "gemini-2.0-flash"
-                self.active_providers.append("gemini")
-                print(f"  ✅ GenAI Copilot: Gemini connected ({self.gemini_model})")
-            except Exception as e:
-                print(f"  ⚠️  Gemini init failed ({e})")
-
         # ── Try Groq ───────────────────────────────────
         groq_key = os.environ.get("GROQ_API_KEY")
         if groq_key:
@@ -230,23 +203,7 @@ class CopilotEngine:
             self.context_manager.add_to_history(session_id, "user", message)
 
         for provider in self.active_providers:
-            if provider == "openrouter":
-                try:
-                    result = self._openrouter_chat(message, session_id)
-                    if session_id:
-                        self.context_manager.add_to_history(session_id, "assistant", result["response"])
-                    return result
-                except Exception as e:
-                    print(f"OpenRouter chat error: {e}, automatically falling back to next provider...")
-            elif provider == "gemini":
-                try:
-                    result = self._gemini_chat(message, session_id)
-                    if session_id:
-                        self.context_manager.add_to_history(session_id, "assistant", result["response"])
-                    return result
-                except Exception as e:
-                    print(f"Gemini chat error: {e}, automatically falling back to next provider...")
-            elif provider == "groq":
+            if provider == "groq":
                 try:
                     result = self._groq_chat(message, session_id)
                     if session_id:
@@ -270,11 +227,7 @@ class CopilotEngine:
 
         for provider in self.active_providers:
             try:
-                if provider == "openrouter":
-                    stream = self._openrouter_chat_stream(message, session_id)
-                elif provider == "gemini":
-                    stream = self._gemini_chat_stream(message, session_id)
-                elif provider == "groq":
+                if provider == "groq":
                     stream = self._groq_chat_stream(message, session_id)
                 else:
                     continue

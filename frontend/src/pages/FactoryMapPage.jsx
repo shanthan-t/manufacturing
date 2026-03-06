@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useApi } from '../hooks/useApi'
+import { useFactory } from '../hooks/useFactory'
 
 const API_BASE = 'http://localhost:8000/api'
 
@@ -310,7 +310,7 @@ function FilterBar({ statusFilter, setStatusFilter, lineFilter, setLineFilter, s
 
 /* ── Main Page ───────────────────────────────────────────── */
 export default function FactoryMapPage() {
-    const { data: graphData, loading } = useApi('/graph')
+    const { graphData, loading } = useFactory()
     const [selected, setSelected] = useState(null)
     const [expandedLine, setExpandedLine] = useState(null)
     const [statusFilter, setStatusFilter] = useState('All')

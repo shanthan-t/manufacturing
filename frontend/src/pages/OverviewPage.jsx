@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { useApi } from '../hooks/useApi'
+import { useFactory } from '../hooks/useFactory'
 import { getMachineShortLabel } from '../utils/machineNames'
 import DataSourceSelector from '../components/DataSourceSelector'
 
@@ -18,18 +18,11 @@ function riskColor(prob) {
 }
 
 export default function OverviewPage() {
-    const { data: risk, loading: riskLoading, refetch: refetchRisk } = useApi('/risk/summary')
-    const { data: critical, refetch: refetchCritical } = useApi('/risk/critical')
-    const { data: maintenance, refetch: refetchMaint } = useApi('/maintenance/priorities')
+    const { riskSummary: risk, criticalMachines: critical, maintenance, loading: riskLoading, refetchAll } = useFactory()
 
     const handleDataChange = useCallback(() => {
-        // Re-fetch all data when data source changes
-        setTimeout(() => {
-            refetchRisk()
-            refetchCritical()
-            refetchMaint()
-        }, 500)
-    }, [refetchRisk, refetchCritical, refetchMaint])
+        setTimeout(() => refetchAll(), 500)
+    }, [refetchAll])
 
     if (riskLoading) {
         return (

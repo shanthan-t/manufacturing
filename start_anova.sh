@@ -9,10 +9,12 @@ VENV_PYTHON="$PROJECT_DIR/venv/bin/python"
 BACKEND_DIR="$PROJECT_DIR/backend"
 FRONTEND_DIR="$PROJECT_DIR/frontend"
 
-# ── API Keys (set these in your environment or .env file) ───────
-export GROQ_API_KEY="${GROQ_API_KEY:-your_groq_api_key_here}"
-export GEMINI_API_KEY="${GEMINI_API_KEY:-your_gemini_api_key_here}"
-export OPENROUTER_API_KEY="${OPENROUTER_API_KEY:-your_openrouter_api_key_here}"
+# ── Load environment variables from .env ────────────────────────
+if [ -f "$PROJECT_DIR/.env" ]; then
+    set -a
+    source "$PROJECT_DIR/.env"
+    set +a
+fi
 
 # ── Colors ──────────────────────────────────────────────────────
 GREEN="\033[0;32m"

@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
     BarChart, Bar, CartesianGrid,
 } from 'recharts'
-import { useApi, postApi } from '../hooks/useApi'
+import { useFactory } from '../hooks/useFactory'
 import { getMachineShortLabel } from '../utils/machineNames'
 
 const pageTransition = {
@@ -39,18 +39,21 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function ForecastPage() {
     const [horizon, setHorizon] = useState(24)
-    const { data: graphData } = useApi('/graph')
+    const { graphData } = useFactory()
     const machines = graphData?.nodes || []
 
-    // Build forecast trend data
-    const trendData = buildTrendData(machines, horizon)
-    const likelyFailures = machines
-        .filter(m => m.failure_prob >= 0.5)
-        .sort((a, b) => b.failure_prob - a.failure_prob)
-        .slice(0, 8)
+    // Build forecast trend data (memoized)
+    const trendData = useMemo(() => buildTrendData(machines, horizon), [machines, horizon])
+    const likelyFailures = useMemo(() =>
+        machines
+            .filter(m => m.failure_prob >= 0.5)
+            .sort((a, b) => b.failure_prob - a.failure_prob)
+            .slice(0, 8),
+        [machines]
+    )
 
-    // Build bar chart data per production line
-    const lineRisks = buildLineRisks(machines)
+    // Build bar chart data per production line (memoized)
+    const lineRisks = useMemo(() => buildLineRisks(machines), [machines])
 
     return (
         <motion.div className="page-container" {...pageTransition}>
@@ -111,7 +114,10 @@ export default function ForecastPage() {
                                 <XAxis dataKey="line" stroke="#48484A" fontSize={11} />
                                 <YAxis stroke="#48484A" fontSize={11} domain={[0, 100]} />
                                 <Tooltip content={<CustomTooltip />} />
-                                <Bar dataKey="risk" name="Avg Risk %" fill="#0A84FF" radius={[6, 6, 0, 0]} />
+                                <Bar
+                                    dataKey="risk" name="Avg Risk %" fill="#0A84FF" radius={[6, 6, 0, 0]}
+                                    activeBar={{ fill: '#3DA0FF', stroke: 'none', filter: 'drop-shadow(0 0 8px rgba(10,132,255,0.5))' }}
+                                />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
