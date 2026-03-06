@@ -9,10 +9,26 @@ const pageTransition = {
     transition: { duration: 0.3 },
 }
 
+function impactColor(level) {
+    switch (level) {
+        case 'critical': return '#ff1744'
+        case 'high': return '#ff6d00'
+        case 'medium': return '#ffab00'
+        case 'low': return '#00e676'
+        default: return '#94a3b8'
+    }
+}
+
 function riskColor(prob) {
     if (prob >= 0.7) return 'var(--color-critical)'
     if (prob >= 0.4) return 'var(--color-warning)'
     return 'var(--color-success)'
+}
+
+function formatCurrency(value) {
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
+    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
+    return `$${value.toFixed(0)}`
 }
 
 export default function SimulatorPage() {
@@ -26,8 +42,6 @@ export default function SimulatorPage() {
         acc[line].push(m)
         return acc
     }, {})
-
-    // Sort lines alphabetically
     const sortedLines = Object.keys(machinesByLine).sort()
 
     const [selectedId, setSelectedId] = useState('')
@@ -62,11 +76,14 @@ export default function SimulatorPage() {
         }
     }, [])
 
+    const blastRadius = result?.blast_radius
+    const impactBreakdown = blastRadius?.impact_breakdown || {}
+
     return (
         <motion.div className="page-container" {...pageTransition}>
             <div className="page-header">
                 <h1 className="page-title">Cascade Simulator</h1>
-                <p className="page-subtitle">Simulate machine failures and visualize cascade propagation</p>
+                <p className="page-subtitle">Simulate machine failures and visualize blast radius propagation</p>
             </div>
 
             <div className="grid-2">
@@ -85,7 +102,7 @@ export default function SimulatorPage() {
                                 value={selectedId}
                                 onChange={e => {
                                     setSelectedId(e.target.value)
-                                    setResult(null) // Reset results when changing machine
+                                    setResult(null)
                                 }}
                             >
                                 <option value="">Choose a machine…</option>
@@ -179,75 +196,84 @@ export default function SimulatorPage() {
                     </div>
                 </div>
 
-                {/* Results */}
+                {/* Blast Radius Metrics */}
                 <div className="glass" style={{ padding: '28px' }}>
-                    <h3 className="section-title">🌊 Cascade Impact</h3>
+                    <h3 className="section-title">💥 Failure Blast Radius</h3>
 
                     <AnimatePresence mode="wait">
                         {result ? (
                             <motion.div
-                                key="results"
+                                key="blast-radius"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                {/* Impact Summary */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '24px' }}>
-                                    <div className="glass-sm" style={{ padding: '16px', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-critical)' }}>
-                                            {result.affected_count}
-                                        </div>
-                                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                                            Machines Hit
-                                        </div>
+                                {/* 4-Metric Grid */}
+                                <div className="blast-metrics-grid">
+                                    <div className="blast-metric-card blast-metric-critical">
+                                        <div className="blast-metric-value">{result.affected_count}</div>
+                                        <div className="blast-metric-label">Machines Affected</div>
                                     </div>
-                                    <div className="glass-sm" style={{ padding: '16px', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-warning)' }}>
-                                            {result.total_downtime_hours?.toFixed(1)}h
-                                        </div>
-                                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                                            Downtime
-                                        </div>
+                                    <div className="blast-metric-card blast-metric-depth">
+                                        <div className="blast-metric-value">{result.max_cascade_depth}</div>
+                                        <div className="blast-metric-label">Max Cascade Depth</div>
                                     </div>
-                                    <div className="glass-sm" style={{ padding: '16px', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--color-primary)' }}>
-                                            {result.max_cascade_depth}
+                                    <div className="blast-metric-card blast-metric-downtime">
+                                        <div className="blast-metric-value">{result.total_downtime_hours?.toFixed(1)}h</div>
+                                        <div className="blast-metric-label">Est. Downtime</div>
+                                    </div>
+                                    <div className="blast-metric-card blast-metric-loss">
+                                        <div className="blast-metric-value">
+                                            {formatCurrency(blastRadius?.estimated_economic_loss || 0)}
                                         </div>
-                                        <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                                            Cascade Depth
-                                        </div>
+                                        <div className="blast-metric-label">Economic Loss</div>
                                     </div>
                                 </div>
 
-                                {/* Affected Machines */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {result.affected_machines?.map((m, i) => (
-                                        <motion.div
-                                            key={m.machine_id}
-                                            className={`machine-item ${m.machine_id === selectedId ? 'machine-item-simulated' : ''}`}
-                                            initial={{ opacity: 0, x: -20, background: 'var(--color-bg-tertiary)' }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: i * 0.08, duration: 0.4 }}
-                                        >
-                                            <div className="machine-item-info">
-                                                <span className="machine-item-name">{getMachineShortLabel(m.machine_id)}</span>
-                                                <span className="machine-item-line">Depth {m.depth}</span>
-                                            </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <div className="risk-bar">
-                                                    <div className="risk-bar-fill" style={{
-                                                        width: `${m.combined_risk * 100}%`,
-                                                        background: riskColor(m.combined_risk),
-                                                    }} />
-                                                </div>
-                                                <span style={{ fontSize: '13px', fontWeight: 600, color: riskColor(m.combined_risk) }}>
-                                                    {(m.combined_risk * 100).toFixed(0)}%
-                                                </span>
-                                            </div>
-                                        </motion.div>
-                                    ))}
+                                {/* Impact Breakdown Bar */}
+                                <div className="blast-breakdown">
+                                    <div className="blast-breakdown-header">
+                                        <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Impact Distribution</span>
+                                    </div>
+                                    <div className="blast-breakdown-bar">
+                                        {['critical', 'high', 'medium', 'low'].map(level => {
+                                            const count = impactBreakdown[level] || 0
+                                            const total = result.affected_count || 1
+                                            const pct = (count / total) * 100
+                                            if (pct === 0) return null
+                                            return (
+                                                <div
+                                                    key={level}
+                                                    className="blast-breakdown-segment"
+                                                    style={{
+                                                        width: `${pct}%`,
+                                                        background: impactColor(level),
+                                                    }}
+                                                    title={`${level}: ${count} machines`}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                    <div className="blast-breakdown-legend">
+                                        {['critical', 'high', 'medium', 'low'].map(level => (
+                                            <span key={level} className="blast-legend-item">
+                                                <span className="blast-legend-dot" style={{ background: impactColor(level) }} />
+                                                {level.charAt(0).toUpperCase() + level.slice(1)}: {impactBreakdown[level] || 0}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
+
+                                {/* Affected Lines */}
+                                {blastRadius?.affected_lines?.length > 0 && (
+                                    <div style={{ marginTop: '16px' }}>
+                                        <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Affected Lines: </span>
+                                        {blastRadius.affected_lines.map((line, i) => (
+                                            <span key={i} className="blast-line-tag">{line}</span>
+                                        ))}
+                                    </div>
+                                )}
                             </motion.div>
                         ) : (
                             <motion.div
@@ -256,13 +282,87 @@ export default function SimulatorPage() {
                                 animate={{ opacity: 1 }}
                                 style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-tertiary)' }}
                             >
-                                <div style={{ fontSize: '48px', marginBottom: '12px' }}>⚡</div>
-                                <p style={{ fontSize: '15px' }}>Select a machine and run a simulation to see cascade impact</p>
+                                <div style={{ fontSize: '48px', marginBottom: '12px' }}>💥</div>
+                                <p style={{ fontSize: '15px' }}>Run a simulation to see the failure blast radius</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Cascade Propagation Chain */}
+            {result?.affected_machines?.length > 0 && (
+                <motion.div
+                    className="glass"
+                    style={{ padding: '28px', marginTop: '24px' }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <h3 className="section-title">🌊 Cascade Propagation Chain</h3>
+                    <div className="cascade-chain">
+                        {/* Origin machine */}
+                        <motion.div
+                            className="cascade-node cascade-node-origin"
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5, type: 'spring' }}
+                        >
+                            <div className="cascade-node-ripple" />
+                            <div className="cascade-node-inner">
+                                <span className="cascade-node-name">{getMachineShortLabel(result.origin_machine)}</span>
+                                <span className="cascade-node-tag" style={{ background: '#ff174430', color: '#ff1744' }}>
+                                    ORIGIN · {(result.origin_failure_prob * 100).toFixed(0)}%
+                                </span>
+                            </div>
+                        </motion.div>
+
+                        {/* Affected machines with staggered ripple */}
+                        {result.affected_machines.map((m, i) => (
+                            <motion.div
+                                key={m.machine_id}
+                                className={`cascade-node cascade-node-${m.impact_level}`}
+                                initial={{ opacity: 0, x: -30 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 + i * 0.12, duration: 0.5, type: 'spring' }}
+                            >
+                                <div className="cascade-node-connector">
+                                    <div className="cascade-connector-line" />
+                                    <span className="cascade-depth-badge">D{m.depth}</span>
+                                </div>
+                                <div className="cascade-node-inner">
+                                    <div className="cascade-node-header">
+                                        <span className="cascade-node-name">{getMachineShortLabel(m.machine_id)}</span>
+                                        <span
+                                            className="cascade-impact-badge"
+                                            style={{
+                                                background: `${impactColor(m.impact_level)}20`,
+                                                color: impactColor(m.impact_level),
+                                                borderColor: impactColor(m.impact_level),
+                                            }}
+                                        >
+                                            {m.impact_level.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <div className="cascade-node-meta">
+                                        <span>Risk: <strong style={{ color: impactColor(m.impact_level) }}>{(m.combined_risk * 100).toFixed(0)}%</strong></span>
+                                        <span style={{ color: 'var(--color-text-tertiary)' }}>Impact: {(m.impact_score * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="cascade-risk-bar">
+                                        <motion.div
+                                            className="cascade-risk-bar-fill"
+                                            style={{ background: impactColor(m.impact_level) }}
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${m.combined_risk * 100}%` }}
+                                            transition={{ delay: 0.5 + i * 0.12, duration: 0.6 }}
+                                        />
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
         </motion.div>
     )
 }

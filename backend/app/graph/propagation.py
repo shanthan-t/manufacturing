@@ -1,9 +1,35 @@
 """
 Failure Propagation Engine — simulates cascade failures through the factory graph.
+
+Enhanced with:
+  • Propagation decay — impact reduces as cascade depth increases
+  • Impact scoring — failure_prob × dependency_weight × decay^depth
+  • Impact levels  — critical / high / medium / low colour coding
+  • Blast radius   — economic loss, impact breakdown, summary metrics
 """
 from collections import deque
 from dataclasses import dataclass, field
 from app.graph.factory_graph import FactoryGraph
+
+# ── Constants ────────────────────────────────────────────────────────────────
+PROPAGATION_DECAY = 0.85          # Impact multiplier per cascade depth
+HOURLY_COST_USD = 5_000           # Economic cost per hour of downtime
+IMPACT_THRESHOLDS = {             # impact_score → level
+    "critical": 0.70,
+    "high":     0.40,
+    "medium":   0.15,
+}
+
+
+def _impact_level(score: float) -> str:
+    """Classify an impact score into a severity level."""
+    if score >= IMPACT_THRESHOLDS["critical"]:
+        return "critical"
+    if score >= IMPACT_THRESHOLDS["high"]:
+        return "high"
+    if score >= IMPACT_THRESHOLDS["medium"]:
+        return "medium"
+    return "low"
 
 
 @dataclass
@@ -16,6 +42,8 @@ class CascadeStep:
     cascade_risk: float
     combined_risk: float
     depth: int
+    impact_score: float = 0.0
+    impact_level: str = "low"
     source_machine: str | None = None
 
     def to_dict(self):
@@ -26,6 +54,8 @@ class CascadeStep:
             "original_failure_prob": round(self.original_failure_prob, 4),
             "cascade_risk": round(self.cascade_risk, 4),
             "combined_risk": round(self.combined_risk, 4),
+            "impact_score": round(self.impact_score, 4),
+            "impact_level": self.impact_level,
             "depth": self.depth,
             "source_machine": self.source_machine,
         }
@@ -33,13 +63,28 @@ class CascadeStep:
 
 @dataclass
 class CascadeResult:
-    """Result of a cascade failure simulation."""
+    """Result of a cascade failure simulation with blast-radius metrics."""
     origin_machine: str
     origin_failure_prob: float
     affected_machines: list[CascadeStep] = field(default_factory=list)
     total_downtime_hours: float = 0.0
     max_cascade_depth: int = 0
     cascade_paths: list[list[str]] = field(default_factory=list)
+
+    # ── Blast-radius helpers ─────────────────────────────────────────────
+
+    @property
+    def estimated_economic_loss(self) -> float:
+        """Total estimated $ loss from cascaded downtime."""
+        return self.total_downtime_hours * HOURLY_COST_USD
+
+    @property
+    def impact_breakdown(self) -> dict[str, int]:
+        """Count of affected machines per impact level."""
+        breakdown = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+        for m in self.affected_machines:
+            breakdown[m.impact_level] = breakdown.get(m.impact_level, 0) + 1
+        return breakdown
 
     def to_dict(self):
         return {
@@ -50,6 +95,13 @@ class CascadeResult:
             "total_downtime_hours": round(self.total_downtime_hours, 1),
             "max_cascade_depth": self.max_cascade_depth,
             "cascade_paths": self.cascade_paths,
+            "blast_radius": {
+                "estimated_economic_loss": round(self.estimated_economic_loss, 2),
+                "impact_breakdown": self.impact_breakdown,
+                "affected_lines": list({
+                    m.production_line for m in self.affected_machines
+                }),
+            },
         }
 
 
@@ -58,7 +110,7 @@ class PropagationEngine:
     Simulates cascade failure propagation through the factory dependency graph.
 
     Uses BFS to propagate failure risk from a source machine to all downstream
-    machines, applying edge weights to compute cascading risk.
+    machines, applying edge weights and propagation decay to compute cascading risk.
     """
 
     def __init__(self, factory_graph: FactoryGraph):
@@ -73,13 +125,16 @@ class PropagationEngine:
         """
         Simulate cascade failure starting from a given machine.
 
+        Impact model per downstream node:
+            impact_score = failure_prob × edge_weight × PROPAGATION_DECAY ^ depth
+
         Args:
             machine_id: The machine that initiates the failure
             failure_prob: Override failure probability (default: use current)
             apply_to_graph: Whether to update graph node states
 
         Returns:
-            CascadeResult with all affected machines and metrics
+            CascadeResult with all affected machines, blast-radius metrics
         """
         graph = self.factory_graph.graph
         if machine_id not in graph:
@@ -120,6 +175,10 @@ class PropagationEngine:
             node_data = graph.nodes[current_id]
             original_fp = node_data.get("failure_prob", 0.0)
 
+            # Apply propagation decay
+            decay = PROPAGATION_DECAY ** depth
+            impact_score = origin_prob * incoming_risk * decay
+
             # Combined risk: own risk + cascade risk, capped at 1.0
             combined_risk = min(1.0, original_fp + incoming_risk)
 
@@ -130,6 +189,8 @@ class PropagationEngine:
                 original_failure_prob=original_fp,
                 cascade_risk=round(incoming_risk, 4),
                 combined_risk=round(combined_risk, 4),
+                impact_score=round(impact_score, 4),
+                impact_level=_impact_level(combined_risk),
                 depth=depth,
                 source_machine=source_id,
             )
@@ -155,11 +216,11 @@ class PropagationEngine:
             result.cascade_paths.append(path)
             result.max_cascade_depth = max(result.max_cascade_depth, depth)
 
-            # Propagate to successors
+            # Propagate to successors with decay
             for successor in graph.successors(current_id):
                 if successor not in visited:
                     edge_weight = graph[current_id][successor]["weight"]
-                    next_risk = combined_risk * edge_weight
+                    next_risk = combined_risk * edge_weight * PROPAGATION_DECAY
                     # Only propagate if risk is significant
                     if next_risk >= 0.01:
                         queue.append(
@@ -188,6 +249,7 @@ class PropagationEngine:
                 "affected_count": len(cascade.affected_machines),
                 "total_downtime_hours": round(cascade.total_downtime_hours, 1),
                 "max_cascade_depth": cascade.max_cascade_depth,
+                "estimated_economic_loss": round(cascade.estimated_economic_loss, 2),
             })
 
         results.sort(key=lambda x: x["total_downtime_hours"], reverse=True)

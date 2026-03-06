@@ -639,7 +639,21 @@ class CopilotEngine:
         }
 
         try:
-            rc = self.root_cause_engine.analyze(resolved)
+            from app.config import FACTORY_LINES
+            from app.main import app_state
+            unit_id = None
+            for line in FACTORY_LINES:
+                for m_cfg in line["machines"]:
+                    if m_cfg["id"] == resolved:
+                        unit_id = m_cfg["unit_id"]
+                        break
+                if unit_id:
+                    break
+            train_df = app_state.get("train_df")
+            if unit_id and train_df is not None:
+                rc = self.root_cause_engine.analyze(resolved, unit_id, train_df)
+            else:
+                rc = None
             if rc and rc.get("probable_causes"):
                 result["root_causes"] = [
                     {"cause": c["cause"], "relevance": c.get("relevance", "medium")}

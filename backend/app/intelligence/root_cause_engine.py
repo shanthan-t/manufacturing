@@ -1,8 +1,10 @@
 """
 Root Cause Analysis Engine — explains why a machine is predicted to fail
-using XGBoost feature importance, sensor anomaly detection, and
-industrial failure mode mapping.
+using XGBoost feature importance, sensor anomaly detection,
+industrial failure mode mapping, and AI-powered explanation generation.
 """
+import os
+import json
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass, field
@@ -99,6 +101,42 @@ MACHINE_FAILURE_PROFILES = {
     "Packaging Conveyor": ["Belt drive wear", "Fan imbalance", "Bearing wear", "Actuator wear"],
 }
 
+# ── Maintenance recommendations keyed by failure mode ────────────────────────
+MAINTENANCE_RECOMMENDATIONS = {
+    "Bearing wear": "Schedule bearing replacement and alignment check. Lubricate all bearing surfaces and inspect for metal debris.",
+    "Compressor fouling": "Perform compressor wash procedure. Inspect and replace inlet filters. Check for environmental contaminants.",
+    "Pressure system leak": "Conduct pressure test on all seals and gaskets. Inspect pipe connections and replace worn components.",
+    "Valve malfunction": "Inspect valve actuators and control circuits. Replace faulty solenoids or pneumatic cylinders.",
+    "Thermal degradation": "Check cooling system flow rates. Replace degraded thermal paste or insulation. Verify ambient ventilation.",
+    "Fan imbalance": "Balance fan assembly. Inspect blades for damage or debris buildup. Check mounting bolts torque.",
+    "Shaft misalignment": "Perform laser alignment on shaft couplings. Inspect flexible elements and replace if worn.",
+    "Core bearing wear": "Replace core bearings. Inspect shaft for scoring. Analyze oil samples for wear particles.",
+    "Shaft degradation": "Perform non-destructive testing on shaft integrity. Plan shaft replacement during next planned outage.",
+    "Compressor stall risk": "Reduce operating load temporarily. Inspect inlet guide vanes. Check surge margin parameters.",
+    "Fuel system degradation": "Inspect fuel nozzles and replace if clogged. Check fuel pump pressure and flow rate.",
+    "Fan blade damage": "Perform visual and ultrasonic inspection of fan blades. Ground-check for foreign object damage.",
+    "Control system drift": "Recalibrate control sensors. Update PID parameters. Check wiring and connector integrity.",
+    "Actuator wear": "Inspect actuator linkages. Replace worn seals and piston rings. Verify response time specifications.",
+    "Turbine blade erosion": "Perform borescope inspection. Plan blade refurbishment during next overhaul window.",
+    "Seal deterioration": "Replace hot section seals. Inspect mating surfaces for wear grooves.",
+    "Hydraulic seal failure": "Replace hydraulic cylinder seals. Check fluid contamination levels and filter condition.",
+    "Spindle bearing wear": "Replace spindle bearings. Check runout specifications. Verify preload settings.",
+    "Servo motor degradation": "Test motor winding resistance. Check encoder alignment. Plan motor replacement.",
+    "Belt drive wear": "Inspect belt tension and condition. Replace worn belts. Check pulley alignment.",
+    "Thermal cycling fatigue": "Reduce thermal cycling frequency if possible. Inspect for micro-cracks. Plan component replacement.",
+    "Bypass duct blockage": "Clear bypass duct obstructions. Inspect duct lining for delamination.",
+    "Bleed valve wear": "Replace bleed valve components. Verify valve response timing.",
+    "Bleed air system leak": "Pressure-test bleed air ducting. Replace leaking joints and flex connections.",
+    "Inlet filter blockage": "Replace inlet filters. Check pre-filter stages. Review filter replacement schedule.",
+    "Surge margin reduction": "Reduce compressor operating point. Inspect variable geometry components.",
+    "Combustor efficiency loss": "Inspect combustor liner. Check igniter condition. Clean fuel nozzles.",
+    "Nozzle wear": "Inspect exhaust nozzle for erosion. Plan nozzle component replacement.",
+    "Thermal management failure": "Check coolant levels and pump operation. Inspect heat exchangers for fouling.",
+    "Pressure regulation failure": "Recalibrate pressure regulators. Inspect relief valves and replace if necessary.",
+    "Foreign object impact": "Perform detailed inlet inspection. Check for secondary damage downstream.",
+    "Core degradation": "Plan core module overhaul. Monitor performance margins closely until repair.",
+}
+
 
 @dataclass
 class SensorContribution:
@@ -111,6 +149,7 @@ class SensorContribution:
     fleet_mean: float
     fleet_std: float
     is_anomalous: bool
+    anomaly_severity: str = "normal"  # "normal", "moderate", "severe"
     failure_modes: list[str] = field(default_factory=list)
     description: str = ""
 
@@ -124,6 +163,7 @@ class SensorContribution:
             "fleet_mean": round(self.fleet_mean, 4),
             "fleet_std": round(self.fleet_std, 4),
             "is_anomalous": self.is_anomalous,
+            "anomaly_severity": self.anomaly_severity,
             "failure_modes": self.failure_modes,
             "description": self.description,
         }
@@ -135,9 +175,11 @@ class RootCauseEngine:
     1. XGBoost feature importance — which features drive the model most
     2. Sensor anomaly detection — z-score of current readings vs fleet
     3. Failure mode mapping — links sensor anomalies to industrial causes
+    4. AI explanation — Groq LLM generates concise engineering analysis
     """
 
     ANOMALY_Z_THRESHOLD = 1.5  # z-scores above this are flagged
+    SEVERE_Z_THRESHOLD = 3.0   # z-scores above this are severe
 
     def __init__(self, model, preprocessor, train_df: pd.DataFrame, feature_columns: list[str]):
         self.model = model
@@ -149,6 +191,18 @@ class RootCauseEngine:
 
         # Extract global feature importance
         self._feature_importance = self._extract_feature_importance()
+
+        # ── Initialize Groq client for AI explanations ──
+        self._groq_client = None
+        self._groq_model = "llama-3.3-70b-versatile"
+        groq_key = os.environ.get("GROQ_API_KEY")
+        if groq_key:
+            try:
+                from groq import Groq
+                self._groq_client = Groq(api_key=groq_key)
+                print("  ✅ RootCauseEngine: Groq AI explanation enabled")
+            except Exception as e:
+                print(f"  ⚠️  RootCauseEngine: Groq init failed ({e})")
 
     def _compute_fleet_stats(self, train_df: pd.DataFrame) -> dict:
         """Compute mean and std for each sensor across the fleet."""
@@ -224,6 +278,14 @@ class RootCauseEngine:
 
             is_anomalous = z_score > self.ANOMALY_Z_THRESHOLD
 
+            # Anomaly severity classification
+            if z_score >= self.SEVERE_Z_THRESHOLD:
+                anomaly_severity = "severe"
+            elif z_score >= self.ANOMALY_Z_THRESHOLD:
+                anomaly_severity = "moderate"
+            else:
+                anomaly_severity = "normal"
+
             contributions.append(SensorContribution(
                 sensor_name=sensor,
                 display_name=sensor_meta["name"],
@@ -233,6 +295,7 @@ class RootCauseEngine:
                 fleet_mean=fleet_mean,
                 fleet_std=fleet_std,
                 is_anomalous=is_anomalous,
+                anomaly_severity=anomaly_severity,
                 failure_modes=sensor_meta["failure_modes"],
                 description=sensor_meta["description"],
             ))
@@ -274,15 +337,154 @@ class RootCauseEngine:
         anomalous_sensors = [c for c in top_sensors if c.is_anomalous]
         trend_summary = self._generate_trend_summary(anomalous_sensors, machine_type)
 
+        # Primary and secondary causes
+        primary_cause = probable_causes[0]["cause"] if probable_causes else "No clear root cause identified"
+        secondary_causes = [c["cause"] for c in probable_causes[1:4]] if len(probable_causes) > 1 else []
+
+        # Recommended action
+        recommended_action = MAINTENANCE_RECOMMENDATIONS.get(
+            primary_cause,
+            "Schedule inspection and comprehensive diagnostics to determine optimal maintenance action."
+        )
+
         return {
             "machine_id": machine_id,
             "machine_type": machine_type,
             "confidence": round(confidence, 2),
             "top_sensors": [c.to_dict() for c in top_sensors],
             "probable_causes": probable_causes[:5],
+            "primary_cause": primary_cause,
+            "secondary_causes": secondary_causes,
+            "recommended_action": recommended_action,
             "trend_summary": trend_summary,
             "anomalous_count": len(anomalous_sensors),
             "total_sensors_analyzed": len(contributions),
+        }
+
+    # ── AI Explanation Generation ────────────────────────────────────────────
+
+    def generate_ai_explanation(
+        self,
+        machine_id: str,
+        health_score: float,
+        failure_prob: float,
+        production_line: str,
+        analysis: dict,
+    ) -> dict:
+        """
+        Generate an AI-powered engineering explanation using Groq LLM.
+
+        Returns dict with: primary_cause, secondary_causes, recommended_action,
+        ai_explanation. Falls back to rule-based explanation if LLM unavailable.
+        """
+        # Build structured context for the LLM
+        anomalous_sensors_text = []
+        for s in analysis.get("top_sensors", []):
+            if s.get("is_anomalous"):
+                direction = "above" if s["current_value"] > s["fleet_mean"] else "below"
+                anomalous_sensors_text.append(
+                    f"- {s['display_name']} ({s['sensor_name']}): "
+                    f"{s['anomaly_score']:.1f}σ {direction} fleet average "
+                    f"(current: {s['current_value']:.2f}, fleet avg: {s['fleet_mean']:.2f}) "
+                    f"— Severity: {s.get('anomaly_severity', 'moderate')}"
+                )
+
+        probable_causes_text = "\n".join(
+            f"- {c['cause']} (relevance: {c['relevance']}, supporting sensors: {c['frequency']})"
+            for c in analysis.get("probable_causes", [])[:5]
+        )
+
+        prompt = f"""Analyze the following machine condition and explain the likely root cause of failure.
+Provide a short, engineering-focused explanation and a maintenance recommendation.
+
+Machine: {machine_id}
+Type: {analysis.get('machine_type', 'Unknown')}
+Production Line: {production_line}
+Health Score: {health_score:.1%}
+Failure Probability: {failure_prob:.1%}
+Analysis Confidence: {analysis.get('confidence', 0):.0%}
+
+Detected Sensor Anomalies:
+{chr(10).join(anomalous_sensors_text) if anomalous_sensors_text else 'No severe anomalies detected.'}
+
+Probable Failure Causes:
+{probable_causes_text if probable_causes_text else 'No clear failure modes identified.'}
+
+Sensor Trends:
+{chr(10).join('- ' + t for t in analysis.get('trend_summary', [])) if analysis.get('trend_summary') else 'No significant trends.'}
+
+Instructions:
+1. State the PRIMARY ROOT CAUSE in one sentence.
+2. List 1-2 SECONDARY CONTRIBUTING FACTORS.
+3. Provide a specific MAINTENANCE RECOMMENDATION (2-3 sentences).
+4. Write a brief ENGINEERING EXPLANATION (3-4 sentences) that references specific sensor signals.
+
+Format your response EXACTLY as JSON with these keys:
+{{"primary_cause": "...", "secondary_causes": ["...", "..."], "recommended_action": "...", "ai_explanation": "..."}}
+
+IMPORTANT: Return ONLY valid JSON. No markdown, no extra text."""
+
+        # Try LLM generation
+        if self._groq_client:
+            try:
+                response = self._groq_client.chat.completions.create(
+                    model=self._groq_model,
+                    messages=[
+                        {"role": "system", "content": "You are an expert industrial reliability engineer. Analyze machine sensor data and provide concise, actionable root cause explanations. Always respond with valid JSON only."},
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=0.2,
+                    max_tokens=600,
+                )
+                text = response.choices[0].message.content.strip()
+
+                # Parse JSON — handle markdown code fences
+                if text.startswith("```"):
+                    text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+                    text = text.rsplit("```", 1)[0]
+                text = text.strip()
+
+                ai_result = json.loads(text)
+                return {
+                    "primary_cause": ai_result.get("primary_cause", analysis.get("primary_cause", "")),
+                    "secondary_causes": ai_result.get("secondary_causes", analysis.get("secondary_causes", [])),
+                    "recommended_action": ai_result.get("recommended_action", analysis.get("recommended_action", "")),
+                    "ai_explanation": ai_result.get("ai_explanation", ""),
+                }
+            except Exception as e:
+                print(f"  ⚠️  AI explanation generation failed: {e}")
+
+        # Fallback: rule-based explanation
+        return self._rule_based_explanation(analysis)
+
+    def _rule_based_explanation(self, analysis: dict) -> dict:
+        """Generate a rule-based explanation when LLM is unavailable."""
+        anomalous = [s for s in analysis.get("top_sensors", []) if s.get("is_anomalous")]
+        primary = analysis.get("primary_cause", "Unknown failure mode")
+        secondary = analysis.get("secondary_causes", [])
+
+        # Build explanation from anomalous sensors
+        explanation_parts = []
+        for s in anomalous[:3]:
+            direction = "elevated" if s["current_value"] > s["fleet_mean"] else "reduced"
+            explanation_parts.append(
+                f"{s['display_name']} is {direction} at {s['anomaly_score']:.1f}σ from fleet baseline, "
+                f"indicating {s['description'].lower()}"
+            )
+
+        if explanation_parts:
+            explanation = f"Analysis of {analysis.get('machine_type', 'this machine')} sensors reveals: " + ". ".join(explanation_parts) + "."
+        else:
+            explanation = f"No severe sensor anomalies detected. Predicted failure is based on cumulative degradation patterns in the sensor data."
+
+        recommended = analysis.get("recommended_action",
+            "Schedule comprehensive diagnostics and inspection during next maintenance window.")
+
+        return {
+            "primary_cause": primary,
+            "secondary_causes": secondary,
+            "recommended_action": recommended,
+            "ai_explanation": explanation,
         }
 
     @staticmethod
@@ -310,3 +512,4 @@ class RootCauseEngine:
                 )
 
         return summaries
+

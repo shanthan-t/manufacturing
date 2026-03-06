@@ -5,6 +5,7 @@ import { useFactory } from '../hooks/useFactory'
 const NAV_ITEMS = [
     { path: '/', label: 'Overview', preload: () => import('../pages/OverviewPage') },
     { path: '/factory-map', label: 'Factory Map', preload: () => import('../pages/FactoryMapPage') },
+    { path: '/simulator', label: 'Simulator', preload: () => import('../pages/SimulatorPage') },
     { path: '/forecast', label: 'Forecast', preload: () => import('../pages/ForecastPage') },
     { path: '/maintenance', label: 'Maintenance', preload: () => import('../pages/MaintenancePage') },
     { path: '/copilot', label: 'AI Copilot', preload: () => import('../pages/CopilotPage') },

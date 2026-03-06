@@ -191,7 +191,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                         </div>
                     )}
 
-                    {/* Root Cause Summary */}
+                    {/* Root Cause Summary + AI Explanation */}
                     {rootCause && (
                         <div className="mdet-section">
                             <h3 className="mdet-section-title">
@@ -200,6 +200,15 @@ export default function MachineDetailPanel({ machine, onClose }) {
                                     {(rootCause.confidence * 100).toFixed(0)}% confidence
                                 </span>
                             </h3>
+
+                            {/* Primary cause */}
+                            {rootCause.primary_cause && (
+                                <div className="mdet-primary-cause">
+                                    <span>🔴</span>
+                                    <span className="mdet-cause-name">{rootCause.primary_cause}</span>
+                                </div>
+                            )}
+
                             <div className="mdet-causes">
                                 {(rootCause.probable_causes || []).slice(0, 3).map((c, i) => (
                                     <div key={i} className="mdet-cause-item">
@@ -210,6 +219,37 @@ export default function MachineDetailPanel({ machine, onClose }) {
                             </div>
                             {rootCause.trend_summary?.[0] && (
                                 <p className="mdet-trend-note">{rootCause.trend_summary[0]}</p>
+                            )}
+
+                            {/* Recommended action */}
+                            {rootCause.recommended_action && (
+                                <div className="mdet-rec-action">
+                                    <span>🔧</span>
+                                    <span>{rootCause.recommended_action}</span>
+                                </div>
+                            )}
+
+                            {/* AI Explanation */}
+                            {rootCause.ai_explanation ? (
+                                <div className="mdet-ai-card">
+                                    <div className="mdet-ai-header">🤖 AI Analysis</div>
+                                    <div className="mdet-ai-text">{rootCause.ai_explanation}</div>
+                                </div>
+                            ) : (
+                                <button
+                                    className="mdet-ai-btn"
+                                    onClick={async () => {
+                                        try {
+                                            const res = await fetch(`http://localhost:8000/api/machines/${machineId}/root-cause?explain=true`);
+                                            const json = await res.json();
+                                            setRootCause(json.root_cause);
+                                        } catch (err) {
+                                            console.error(err);
+                                        }
+                                    }}
+                                >
+                                    🤖 Get AI Explanation
+                                </button>
                             )}
                         </div>
                     )}

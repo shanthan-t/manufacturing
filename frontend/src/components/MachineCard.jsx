@@ -1,13 +1,15 @@
 /**
  * MachineCard — Individual machine status card with health gauge.
+ * Includes "Explain Failure" button for machines with elevated failure risk.
  */
 import { getRiskColor, MACHINE_ICONS, formatPercent, formatHours } from '../utils/colors';
 import { getMachineName } from '../utils/machineNames';
 
-export default function MachineCard({ machine, isSelected, onClick }) {
+export default function MachineCard({ machine, isSelected, onClick, onExplainFailure }) {
     const riskColor = getRiskColor(machine.failure_prob);
     const healthPct = machine.health_score * 100;
     const icon = MACHINE_ICONS[machine.machine_type] || '⚡';
+    const showExplain = machine.failure_prob >= 0.3;
 
     return (
         <div
@@ -58,6 +60,18 @@ export default function MachineCard({ machine, isSelected, onClick }) {
                 <div className="machine-card__cascade">
                     <span className="cascade-tag">⚡ Cascade Risk: {formatPercent(machine.cascade_risk)}</span>
                 </div>
+            )}
+
+            {showExplain && (
+                <button
+                    className="machine-card__explain-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onExplainFailure?.(machine);
+                    }}
+                >
+                    🔍 Explain Failure
+                </button>
             )}
         </div>
     );

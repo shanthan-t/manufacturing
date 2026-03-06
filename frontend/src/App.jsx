@@ -9,6 +9,7 @@ const FactoryMapPage = lazy(() => import('./pages/FactoryMapPage'))
 const MaintenancePage = lazy(() => import('./pages/MaintenancePage'))
 const ForecastPage = lazy(() => import('./pages/ForecastPage'))
 const CopilotPage = lazy(() => import('./pages/CopilotPage'))
+const SimulatorPage = lazy(() => import('./pages/SimulatorPage'))
 
 const PAGES = [
   { path: '/', Component: OverviewPage },
@@ -16,6 +17,7 @@ const PAGES = [
   { path: '/forecast', Component: ForecastPage },
   { path: '/maintenance', Component: MaintenancePage },
   { path: '/copilot', Component: CopilotPage },
+  { path: '/simulator', Component: SimulatorPage },
 ]
 
 // Fallback spinner for Suspense
