@@ -66,7 +66,7 @@ export default function CopilotPage() {
 
     // Load suggestions
     useEffect(() => {
-        fetch('http://localhost:8000/api/copilot/suggestions')
+        fetch('/api/copilot/suggestions')
             .then(r => r.json())
             .then(data => setSuggestions(data.suggestions || []))
             .catch(() => { })
@@ -122,7 +122,7 @@ export default function CopilotPage() {
 
     const sendStreaming = async (msg) => {
         try {
-            const response = await fetch('http://localhost:8000/api/copilot/stream', {
+            const response = await fetch('/api/copilot/stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: msg, session_id: sessionIdRef.current }),
@@ -169,7 +169,7 @@ export default function CopilotPage() {
 
     const resetChat = useCallback(async () => {
         try {
-            await fetch('http://localhost:8000/api/copilot/reset', {
+            await fetch('/api/copilot/reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ session_id: sessionIdRef.current }),
