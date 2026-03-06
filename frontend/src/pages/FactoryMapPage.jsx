@@ -443,7 +443,7 @@ export default function FactoryMapPage() {
                             >
                                 {filteredLineCards.length === 0 ? (
                                     <div className="fm-empty-state">
-                                        <span className="fm-empty-icon">🔍</span>
+                                        <span className="fm-empty-icon"></span>
                                         <p>No production lines match your filters</p>
                                         <button className="fm-empty-reset" onClick={() => { setStatusFilter('All'); setLineFilter('All'); setSearchQuery('') }}>
                                             Reset Filters

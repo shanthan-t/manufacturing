@@ -21,7 +21,7 @@ export default function SimulationControls({ machines, onSimulate, onReset, casc
         <div className="panel simulation-panel">
             <div className="panel-header">
                 <h2 className="panel-title">Cascade Simulator</h2>
-                <span className="panel-badge">⚡ Propagation</span>
+                <span className="panel-badge"> Propagation</span>
             </div>
 
             <div className="sim-controls">
@@ -65,7 +65,7 @@ export default function SimulationControls({ machines, onSimulate, onReset, casc
                         {isSimulating ? (
                             <><span className="spinner" /> Simulating...</>
                         ) : (
-                            '⚡ Simulate Cascade'
+                            ' Simulate Cascade'
                         )}
                     </button>
                     <button className="btn btn-secondary" onClick={onReset}>

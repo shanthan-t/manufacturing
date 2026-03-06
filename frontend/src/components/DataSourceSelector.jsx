@@ -121,7 +121,7 @@ export default function DataSourceSelector({ onDataChange }) {
         >
             <div className="ds-header">
                 <div className="ds-title-row">
-                    <span className="ds-icon">📡</span>
+                    <span className="ds-icon"></span>
                     <h3 className="ds-title">Data Source</h3>
                 </div>
             </div>
@@ -192,7 +192,7 @@ export default function DataSourceSelector({ onDataChange }) {
 
                             {uploadState === 'idle' && (
                                 <>
-                                    <span className="ds-upload-icon">⬆️</span>
+                                    <span className="ds-upload-icon">⬆</span>
                                     <span className="ds-upload-text">
                                         Drop CSV or Excel file here, or <strong>click to browse</strong>
                                     </span>
@@ -265,7 +265,7 @@ export default function DataSourceSelector({ onDataChange }) {
                                     {uploadInfo.warnings?.length > 0 && (
                                         <div className="ds-warnings">
                                             {uploadInfo.warnings.map((w, i) => (
-                                                <span key={i} className="ds-warning-text">⚠️ {w}</span>
+                                                <span key={i} className="ds-warning-text"> {w}</span>
                                             ))}
                                         </div>
                                     )}

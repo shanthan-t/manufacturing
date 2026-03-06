@@ -191,7 +191,7 @@ export default function RootCausePanel({ machineId, onClose }) {
             {data.primary_cause && (
                 <div className="rca-primary-section">
                     <div className="rca-primary-cause">
-                        <span className="rca-primary-icon">🔴</span>
+                        <span className="rca-primary-icon"></span>
                         <div>
                             <div className="rca-primary-label">Primary Cause</div>
                             <div className="rca-primary-text">{data.primary_cause}</div>
@@ -201,13 +201,13 @@ export default function RootCausePanel({ machineId, onClose }) {
                         <div className="rca-secondary">
                             <span className="rca-secondary-label">Contributing Factors:</span>
                             {data.secondary_causes.map((c, i) => (
-                                <span key={i} className="rca-secondary-tag">🟡 {c}</span>
+                                <span key={i} className="rca-secondary-tag"> {c}</span>
                             ))}
                         </div>
                     )}
                     {data.recommended_action && (
                         <div className="rca-recommendation">
-                            <span className="rca-rec-icon">🔧</span>
+                            <span className="rca-rec-icon"></span>
                             <div>
                                 <div className="rca-rec-label">Recommended Action</div>
                                 <div className="rca-rec-text">{data.recommended_action}</div>
@@ -228,13 +228,13 @@ export default function RootCausePanel({ machineId, onClose }) {
                         {aiLoading ? (
                             <><span className="rca-ai-spinner" /> Analyzing with AI...</>
                         ) : (
-                            <>🤖 Explain with AI</>
+                            <> Explain with AI</>
                         )}
                     </button>
                 ) : (
                     <div className="rca-ai-card">
                         <div className="rca-ai-header">
-                            <span>🤖</span> AI Root Cause Explanation
+                            <span></span> AI Root Cause Explanation
                         </div>
                         <div className="rca-ai-body">
                             {aiExplanation.primary_cause && (
@@ -260,7 +260,7 @@ export default function RootCausePanel({ machineId, onClose }) {
                             )}
                             {aiExplanation.recommended_action && (
                                 <div className="rca-ai-maintenance">
-                                    <span className="rca-ai-maint-label">🔧 Recommended Maintenance</span>
+                                    <span className="rca-ai-maint-label"> Recommended Maintenance</span>
                                     <span className="rca-ai-maint-text">{aiExplanation.recommended_action}</span>
                                 </div>
                             )}
@@ -294,7 +294,7 @@ export default function RootCausePanel({ machineId, onClose }) {
                         {causes.map((c, i) => (
                             <div key={i} className="rootcause-cause-item" style={{ animationDelay: `${i * 0.06}s` }}>
                                 <span className="rootcause-cause-icon">
-                                    {c.relevance === 'high' ? '🔴' : '🟡'}
+                                    {c.relevance === 'high' ? '' : ''}
                                 </span>
                                 <div className="rootcause-cause-info">
                                     <span className="rootcause-cause-name">{c.cause}</span>

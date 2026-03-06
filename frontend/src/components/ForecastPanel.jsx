@@ -197,7 +197,7 @@ export default function ForecastPanel() {
             <div className="panel forecast-panel">
                 <div className="panel-header">
                     <h2 className="panel-title">Future Risk Forecast</h2>
-                    <span className="panel-badge">📈 Prediction</span>
+                    <span className="panel-badge"> Prediction</span>
                 </div>
                 <div className="panel-empty">Computing forecast...</div>
             </div>
@@ -208,7 +208,7 @@ export default function ForecastPanel() {
         <div className="panel forecast-panel">
             <div className="panel-header">
                 <h2 className="panel-title">Future Risk Forecast</h2>
-                <span className="panel-badge">📈 Prediction</span>
+                <span className="panel-badge"> Prediction</span>
             </div>
 
             {/* Horizon Selector */}
@@ -255,11 +255,11 @@ export default function ForecastPanel() {
             {/* Likely Failures */}
             {likelyFailures.length > 0 && (
                 <div className="forecast-failures">
-                    <h4 className="forecast-failures-title">⚠️ Machines Predicted to Fail</h4>
+                    <h4 className="forecast-failures-title"> Machines Predicted to Fail</h4>
                     <div className="forecast-failures-list">
                         {likelyFailures.map((m, i) => (
                             <div key={m.machine_id} className="forecast-fail-item" style={{ animationDelay: `${i * 0.06}s` }}>
-                                <span className="forecast-fail-icon">{MACHINE_ICONS[m.machine_type] || '⚡'}</span>
+                                <span className="forecast-fail-icon">{MACHINE_ICONS[m.machine_type] || ''}</span>
                                 <div className="forecast-fail-info">
                                     <span className="forecast-fail-id">{getMachineShortLabel(m.machine_id)}</span>
                                     <span className="forecast-fail-type">{m.machine_type}</span>
@@ -283,7 +283,7 @@ export default function ForecastPanel() {
             {/* Vulnerable Line Callout */}
             {summary.most_vulnerable_line && (
                 <div className="forecast-vulnerable">
-                    ⚠️ <strong>{summary.most_vulnerable_line.name}</strong> projected at{' '}
+                     <strong>{summary.most_vulnerable_line.name}</strong> projected at{' '}
                     {formatPercent(summary.most_vulnerable_line.avg_failure_prob)} avg risk in {activeHorizon}h
                 </div>
             )}

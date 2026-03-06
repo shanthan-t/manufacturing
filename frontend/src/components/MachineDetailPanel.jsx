@@ -16,11 +16,11 @@ const URGENCY_COLORS = {
 };
 
 const ACTION_TYPES = [
-    { value: 'repair', label: '🔧 Repair' },
-    { value: 'replace', label: '🔄 Replace' },
-    { value: 'load_reduction', label: '📉 Reduce Load' },
-    { value: 'preventive_maintenance', label: '🛠️ Preventive Maint.' },
-    { value: 'shutdown', label: '⚠️ Shutdown' },
+    { value: 'repair', label: ' Repair' },
+    { value: 'replace', label: ' Replace' },
+    { value: 'load_reduction', label: ' Reduce Load' },
+    { value: 'preventive_maintenance', label: ' Preventive Maint.' },
+    { value: 'shutdown', label: ' Shutdown' },
 ];
 
 function Sparkline({ sensor, container_width }) {
@@ -204,7 +204,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                             {/* Primary cause */}
                             {rootCause.primary_cause && (
                                 <div className="mdet-primary-cause">
-                                    <span>🔴</span>
+                                    <span></span>
                                     <span className="mdet-cause-name">{rootCause.primary_cause}</span>
                                 </div>
                             )}
@@ -212,7 +212,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                             <div className="mdet-causes">
                                 {(rootCause.probable_causes || []).slice(0, 3).map((c, i) => (
                                     <div key={i} className="mdet-cause-item">
-                                        <span>{c.relevance === 'high' ? '🔴' : '🟡'}</span>
+                                        <span>{c.relevance === 'high' ? '' : ''}</span>
                                         <span className="mdet-cause-name">{c.cause}</span>
                                     </div>
                                 ))}
@@ -224,7 +224,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                             {/* Recommended action */}
                             {rootCause.recommended_action && (
                                 <div className="mdet-rec-action">
-                                    <span>🔧</span>
+                                    <span></span>
                                     <span>{rootCause.recommended_action}</span>
                                 </div>
                             )}
@@ -232,7 +232,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                             {/* AI Explanation */}
                             {rootCause.ai_explanation ? (
                                 <div className="mdet-ai-card">
-                                    <div className="mdet-ai-header">🤖 AI Analysis</div>
+                                    <div className="mdet-ai-header"> AI Analysis</div>
                                     <div className="mdet-ai-text">{rootCause.ai_explanation}</div>
                                 </div>
                             ) : (
@@ -248,7 +248,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                                         }
                                     }}
                                 >
-                                    🤖 Get AI Explanation
+                                     Get AI Explanation
                                 </button>
                             )}
                         </div>
@@ -310,7 +310,7 @@ export default function MachineDetailPanel({ machine, onClose }) {
                                 onClick={runScenario}
                                 disabled={scenarioLoading}
                             >
-                                {scenarioLoading ? 'Simulating...' : '⚡ Simulate'}
+                                {scenarioLoading ? 'Simulating...' : ' Simulate'}
                             </button>
                         </div>
 

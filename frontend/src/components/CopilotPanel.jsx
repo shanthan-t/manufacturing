@@ -150,7 +150,7 @@ export default function CopilotPanel() {
             .catch(() => {
                 setMessages([{
                     role: 'assistant',
-                    content: '👋 Hi! I\'m the Factory Reliability Copilot. Ask me anything about machine health, cascade risks, or maintenance priorities.',
+                    content: ' Hi! I\'m the Factory Reliability Copilot. Ask me anything about machine health, cascade risks, or maintenance priorities.',
                     timestamp: Date.now(),
                 }]);
             })
@@ -310,7 +310,7 @@ export default function CopilotPanel() {
                     >
                         ✦ New Chat
                     </button>
-                    <span className="panel-badge copilot-badge">🤖 GenAI</span>
+                    <span className="panel-badge copilot-badge"> GenAI</span>
                 </div>
             </div>
 
@@ -319,7 +319,7 @@ export default function CopilotPanel() {
                 {messages.map((msg, i) => (
                     <div key={i} className={`copilot-msg copilot-msg--${msg.role}`}>
                         {msg.role === 'assistant' && (
-                            <div className="copilot-avatar">🤖</div>
+                            <div className="copilot-avatar"></div>
                         )}
                         <div className={`copilot-bubble copilot-bubble--${msg.role}`}>
                             {msg.role === 'assistant' ? renderMarkdown(msg.content) : msg.content}
@@ -333,7 +333,7 @@ export default function CopilotPanel() {
                 {/* Typing indicator */}
                 {loading && !messages.some(m => m.streaming) && (
                     <div className="copilot-msg copilot-msg--assistant">
-                        <div className="copilot-avatar">🤖</div>
+                        <div className="copilot-avatar"></div>
                         <div className="copilot-bubble copilot-bubble--assistant copilot-typing">
                             <span className="copilot-dot" />
                             <span className="copilot-dot" />

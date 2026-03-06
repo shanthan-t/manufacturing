@@ -84,7 +84,7 @@ export default function CopilotPage() {
             .catch(() => {
                 setMessages([{
                     role: 'assistant',
-                    content: '👋 I\'m the Factory Reliability Copilot. Ask me anything about machine health, cascade risks, or maintenance.',
+                    content: 'Hello! I\'m the Factory Reliability Copilot. Ask me anything about machine health, cascade risks, or maintenance.',
                     timestamp: Date.now(),
                 }])
             })
@@ -201,7 +201,7 @@ export default function CopilotPage() {
                             disabled={loading || messages.length === 0}
                             style={{ fontSize: '13px', padding: '6px 14px', whiteSpace: 'nowrap' }}
                         >
-                            ✦ New Chat
+                            New Chat
                         </button>
                     </div>
                 </div>
@@ -212,7 +212,7 @@ export default function CopilotPage() {
                 <div className="copilot-messages">
                     {messages.map((msg, i) => (
                         <div key={i} className={`copilot-msg copilot-msg--${msg.role}`}>
-                            {msg.role === 'assistant' && <div className="copilot-avatar">🤖</div>}
+                            {msg.role === 'assistant' && <div className="copilot-avatar">AI</div>}
                             <div className={`copilot-bubble copilot-bubble--${msg.role}`}>
                                 {msg.role === 'assistant' ? renderMarkdown(msg.content) : msg.content}
                                 {msg.streaming && <span className="copilot-cursor">▊</span>}
@@ -222,7 +222,7 @@ export default function CopilotPage() {
 
                     {loading && !messages.some(m => m.streaming) && (
                         <div className="copilot-msg copilot-msg--assistant">
-                            <div className="copilot-avatar">🤖</div>
+                            <div className="copilot-avatar">AI</div>
                             <div className="copilot-bubble copilot-bubble--assistant copilot-typing">
                                 <span /><span /><span />
                             </div>
@@ -255,7 +255,7 @@ export default function CopilotPage() {
                         disabled={loading}
                     />
                     <button className="copilot-send" onClick={() => sendMessage()} disabled={loading || !input.trim()}>
-                        ↑
+                        Send
                     </button>
                 </div>
             </div>

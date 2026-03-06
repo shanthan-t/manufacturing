@@ -39,7 +39,7 @@ export default function Layout({ children }) {
         <>
             <nav className="navbar">
                 <div className="navbar-brand">
-                    <span>⚡</span> Cascade<span>Guard</span>
+                    Cascade<span>Guard</span>
                 </div>
 
                 <div className="navbar-links" ref={navLinksRef}>

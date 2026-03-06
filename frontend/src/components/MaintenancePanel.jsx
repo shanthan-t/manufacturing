@@ -6,10 +6,10 @@ import { getRiskColor, formatPercent, formatHours } from '../utils/colors';
 import { getMachineDisplayLabel, getMachineShortLabel } from '../utils/machineNames';
 
 const SEVERITY_ICONS = {
-    immediate: { label: 'IMMEDIATE', color: '#ff1744', bg: 'rgba(255, 23, 68, 0.15)', icon: '🔴', timeframe: '< 2 hours' },
-    urgent: { label: 'URGENT', color: '#ff6d00', bg: 'rgba(255, 109, 0, 0.15)', icon: '🟠', timeframe: '< 6 hours' },
-    scheduled: { label: 'SCHEDULED', color: '#ffab00', bg: 'rgba(255, 171, 0, 0.15)', icon: '🟡', timeframe: '< 24 hours' },
-    monitor: { label: 'MONITOR', color: '#00e676', bg: 'rgba(0, 230, 118, 0.15)', icon: '🟢', timeframe: 'Ongoing' },
+    immediate: { label: 'IMMEDIATE', color: '#ff1744', bg: 'rgba(255, 23, 68, 0.15)', icon: '', timeframe: '< 2 hours' },
+    urgent: { label: 'URGENT', color: '#ff6d00', bg: 'rgba(255, 109, 0, 0.15)', icon: '', timeframe: '< 6 hours' },
+    scheduled: { label: 'SCHEDULED', color: '#ffab00', bg: 'rgba(255, 171, 0, 0.15)', icon: '', timeframe: '< 24 hours' },
+    monitor: { label: 'MONITOR', color: '#00e676', bg: 'rgba(0, 230, 118, 0.15)', icon: '', timeframe: 'Ongoing' },
 };
 
 export default function MaintenancePanel() {
@@ -29,7 +29,7 @@ export default function MaintenancePanel() {
             <div className="panel maintenance-panel">
                 <div className="panel-header">
                     <h2 className="panel-title">Maintenance Priorities</h2>
-                    <span className="panel-badge">🔧 Decision Engine</span>
+                    <span className="panel-badge"> Decision Engine</span>
                 </div>
                 <div className="panel-empty">Loading maintenance analysis...</div>
             </div>
@@ -44,7 +44,7 @@ export default function MaintenancePanel() {
         <div className="panel maintenance-panel">
             <div className="panel-header">
                 <h2 className="panel-title">Maintenance Priorities</h2>
-                <span className="panel-badge">🔧 Decision Engine</span>
+                <span className="panel-badge"> Decision Engine</span>
             </div>
 
             {/* Urgency Summary Bar */}
@@ -81,7 +81,7 @@ export default function MaintenancePanel() {
                                 onClick={() => setExpandedId(isExpanded ? null : item.machine_id)}
                             >
                                 <div className="maint-item-rank">#{i + 1}</div>
-                                <div className="maint-item-icon">{MACHINE_ICONS[item.machine_type] || '⚡'}</div>
+                                <div className="maint-item-icon">{MACHINE_ICONS[item.machine_type] || ''}</div>
                                 <div className="maint-item-info">
                                     <div className="maint-item-id">{getMachineDisplayLabel(item.machine_id)}</div>
                                     <div className="maint-item-meta">{item.machine_type} · {item.production_line}</div>
@@ -149,7 +149,7 @@ export default function MaintenancePanel() {
                                     {/* Downtime Prevention Callout */}
                                     {item.prevented_downtime_hours >= 1 && (
                                         <div className="maint-prevention-callout">
-                                            <span className="maint-prevention-icon">⚡</span>
+                                            <span className="maint-prevention-icon"></span>
                                             <span>
                                                 Maintaining <strong>{getMachineShortLabel(item.machine_id)}</strong> could prevent{' '}
                                                 <strong style={{ color: '#00e676' }}>

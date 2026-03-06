@@ -33,7 +33,7 @@ export default function AIInsightPanel() {
             <div className="panel ai-insight-panel">
                 <div className="panel-header">
                     <h2 className="panel-title">AI Insight</h2>
-                    <span className="panel-badge ai-badge">🤖 Analysis</span>
+                    <span className="panel-badge ai-badge"> Analysis</span>
                 </div>
                 <div className="panel-empty">Generating factory insights...</div>
             </div>
@@ -49,7 +49,7 @@ export default function AIInsightPanel() {
         <div className="panel ai-insight-panel">
             <div className="panel-header">
                 <h2 className="panel-title">AI Insight</h2>
-                <span className="panel-badge ai-badge">🤖 Analysis</span>
+                <span className="panel-badge ai-badge"> Analysis</span>
             </div>
 
             {/* Headline narrative */}

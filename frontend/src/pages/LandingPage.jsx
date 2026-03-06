@@ -62,10 +62,10 @@ function Particles() {
 
 /* ── Feature cards ────────────────────────────────────────────── */
 const features = [
-    { icon: '🔮', title: 'Predictive Maintenance', desc: 'Detect machine degradation using sensor signals and estimate failure probability before breakdowns occur.' },
-    { icon: '🏭', title: 'Factory Digital Twin', desc: 'Visualize machine dependencies across production lines using an interactive network map.' },
-    { icon: '⚡', title: 'Cascade Failure Simulation', desc: 'Simulate how machine failures propagate through factory systems and quantify economic impact.' },
-    { icon: '🧠', title: 'AI Root Cause Analysis', desc: 'Explain why machines are predicted to fail using sensor anomaly detection and AI reasoning.' },
+    { icon: '', title: 'Predictive Maintenance', desc: 'Detect machine degradation using sensor signals and estimate failure probability before breakdowns occur.' },
+    { icon: '', title: 'Factory Digital Twin', desc: 'Visualize machine dependencies across production lines using an interactive network map.' },
+    { icon: '', title: 'Cascade Failure Simulation', desc: 'Simulate how machine failures propagate through factory systems and quantify economic impact.' },
+    { icon: '', title: 'AI Root Cause Analysis', desc: 'Explain why machines are predicted to fail using sensor anomaly detection and AI reasoning.' },
 ]
 
 function FeatureCard({ icon, title, desc, index }) {
@@ -233,7 +233,7 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ delay: 0.1, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
                 >
-                    ⚡ AI-Powered Industrial Intelligence
+                    AI-Powered Industrial Intelligence
                 </motion.div>
 
                 <motion.h1
@@ -346,7 +346,7 @@ export default function LandingPage() {
 
             {/* ─── Footer ───────────────────────────────────── */}
             <footer className="landing-footer">
-                <span>⚡ CascadeGuard</span>
+                <span>CascadeGuard</span>
                 <span className="landing-footer-sep">·</span>
                 <span>AI Failure Propagation Intelligence</span>
             </footer>

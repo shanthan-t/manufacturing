@@ -8,7 +8,7 @@ import { getMachineName } from '../utils/machineNames';
 export default function MachineCard({ machine, isSelected, onClick, onExplainFailure }) {
     const riskColor = getRiskColor(machine.failure_prob);
     const healthPct = machine.health_score * 100;
-    const icon = MACHINE_ICONS[machine.machine_type] || '⚡';
+    const icon = MACHINE_ICONS[machine.machine_type] || '';
     const showExplain = machine.failure_prob >= 0.3;
 
     return (
@@ -58,7 +58,7 @@ export default function MachineCard({ machine, isSelected, onClick, onExplainFai
 
             {machine.cascade_risk > 0 && (
                 <div className="machine-card__cascade">
-                    <span className="cascade-tag">⚡ Cascade Risk: {formatPercent(machine.cascade_risk)}</span>
+                    <span className="cascade-tag"> Cascade Risk: {formatPercent(machine.cascade_risk)}</span>
                 </div>
             )}
 
@@ -70,7 +70,7 @@ export default function MachineCard({ machine, isSelected, onClick, onExplainFai
                         onExplainFailure?.(machine);
                     }}
                 >
-                    🔍 Explain Failure
+                     Explain Failure
                 </button>
             )}
         </div>

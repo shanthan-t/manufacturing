@@ -52,11 +52,11 @@ export function getGlowColor(failureProb) {
  * Machine type icons (emoji-based for simplicity)
  */
 export const MACHINE_ICONS = {
-  'Air Compressor': '🔧',
-  'Pneumatic Press': '⚙️',
-  'CNC Machine': '🏭',
-  'Assembly Robot': '🤖',
-  'Packaging Conveyor': '📦',
+  'Air Compressor': '',
+  'Pneumatic Press': '',
+  'CNC Machine': '',
+  'Assembly Robot': '',
+  'Packaging Conveyor': '',
 };
 
 /**

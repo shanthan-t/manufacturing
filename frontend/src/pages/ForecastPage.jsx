@@ -78,7 +78,7 @@ export default function ForecastPage() {
 
             {/* Health Timeline Chart */}
             <div className="glass" style={{ padding: '24px', marginBottom: '24px' }}>
-                <h3 className="section-title">📈 Projected Factory Health</h3>
+                <h3 className="section-title"> Projected Factory Health</h3>
                 <div style={{ height: '280px', marginTop: '16px' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={trendData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
@@ -106,7 +106,7 @@ export default function ForecastPage() {
             <div className="grid-2">
                 {/* Production Line Risk */}
                 <div className="glass" style={{ padding: '24px' }}>
-                    <h3 className="section-title">🏭 Risk by Production Line</h3>
+                    <h3 className="section-title"> Risk by Production Line</h3>
                     <div style={{ height: '250px', marginTop: '16px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={lineRisks} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
@@ -125,7 +125,7 @@ export default function ForecastPage() {
 
                 {/* Likely Failures */}
                 <div className="glass" style={{ padding: '24px' }}>
-                    <h3 className="section-title">⚠️ Predicted Failures ({horizon}h)</h3>
+                    <h3 className="section-title"> Predicted Failures ({horizon}h)</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
                         {likelyFailures.length > 0 ? likelyFailures.map((m, i) => (
                             <motion.div

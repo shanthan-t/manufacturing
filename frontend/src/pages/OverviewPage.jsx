@@ -103,7 +103,7 @@ export default function OverviewPage() {
             <div className="grid-2">
                 {/* Critical Machines */}
                 <div className="glass" style={{ padding: '24px' }}>
-                    <h3 className="section-title">⚠️ Critical Machines</h3>
+                    <h3 className="section-title"> Critical Machines</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {topMachines.map((m, i) => (
                             <motion.div
@@ -141,7 +141,7 @@ export default function OverviewPage() {
 
                 {/* Maintenance Priorities */}
                 <div className="glass" style={{ padding: '24px' }}>
-                    <h3 className="section-title">🔧 Maintenance Priorities</h3>
+                    <h3 className="section-title"> Maintenance Priorities</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {topMaint.map((m, i) => (
                             <motion.div

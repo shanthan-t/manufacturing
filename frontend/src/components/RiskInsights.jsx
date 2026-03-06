@@ -31,7 +31,7 @@ export default function RiskInsights({ riskSummary }) {
                 <div className="insight-summary">
                     <div className="insight-summary-row">
                         <div className="insight-metric">
-                            <div className="insight-metric-icon">🏭</div>
+                            <div className="insight-metric-icon"></div>
                             <div>
                                 <div className="insight-metric-value" style={{ color: getRiskColor(riskSummary.avg_failure_prob) }}>
                                     {formatPercent(riskSummary.avg_health_score)}
@@ -40,7 +40,7 @@ export default function RiskInsights({ riskSummary }) {
                             </div>
                         </div>
                         <div className="insight-metric">
-                            <div className="insight-metric-icon">⏱️</div>
+                            <div className="insight-metric-icon">⏱</div>
                             <div>
                                 <div className="insight-metric-value" style={{ color: '#ffab00' }}>
                                     {formatHours(riskSummary.estimated_total_downtime_hours)}
@@ -51,7 +51,7 @@ export default function RiskInsights({ riskSummary }) {
                     </div>
                     {riskSummary.most_vulnerable_line && (
                         <div className="insight-vulnerable">
-                            <span className="insight-vulnerable-label">⚠️ Most Vulnerable:</span>
+                            <span className="insight-vulnerable-label"> Most Vulnerable:</span>
                             <span className="insight-vulnerable-value">
                                 {riskSummary.most_vulnerable_line.name}
                                 ({formatPercent(riskSummary.most_vulnerable_line.avg_failure_prob)} avg risk)
@@ -67,13 +67,13 @@ export default function RiskInsights({ riskSummary }) {
                     className={`insight-tab ${activeTab === 'critical' ? 'insight-tab--active' : ''}`}
                     onClick={() => setActiveTab('critical')}
                 >
-                    🔴 Critical Machines
+                     Critical Machines
                 </button>
                 <button
                     className={`insight-tab ${activeTab === 'impact' ? 'insight-tab--active' : ''}`}
                     onClick={() => setActiveTab('impact')}
                 >
-                    💥 Highest Impact
+                     Highest Impact
                 </button>
             </div>
 
@@ -83,7 +83,7 @@ export default function RiskInsights({ riskSummary }) {
                     {criticalMachines.map((m, i) => (
                         <div key={m.id} className="insight-item" style={{ animationDelay: `${i * 0.05}s` }}>
                             <div className="insight-item-rank">#{i + 1}</div>
-                            <div className="insight-item-icon">{MACHINE_ICONS[m.machine_type] || '⚡'}</div>
+                            <div className="insight-item-icon">{MACHINE_ICONS[m.machine_type] || ''}</div>
                             <div className="insight-item-info">
                                 <div className="insight-item-id">{m.id}</div>
                                 <div className="insight-item-meta">{m.machine_type} · {m.production_line}</div>
@@ -110,7 +110,7 @@ export default function RiskInsights({ riskSummary }) {
                     {impactAnalysis.map((m, i) => (
                         <div key={m.machine_id} className="insight-item" style={{ animationDelay: `${i * 0.05}s` }}>
                             <div className="insight-item-rank">#{i + 1}</div>
-                            <div className="insight-item-icon">{MACHINE_ICONS[m.machine_type] || '⚡'}</div>
+                            <div className="insight-item-icon">{MACHINE_ICONS[m.machine_type] || ''}</div>
                             <div className="insight-item-info">
                                 <div className="insight-item-id">{m.machine_id}</div>
                                 <div className="insight-item-meta">{m.machine_type} · {m.production_line}</div>

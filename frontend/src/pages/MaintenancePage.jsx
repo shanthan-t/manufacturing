@@ -61,13 +61,13 @@ export default function MaintenancePage() {
             {/* Priority Sections */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {immediate.length > 0 && (
-                    <PrioritySection title="🔴 Immediate Action" items={immediate} />
+                    <PrioritySection title=" Immediate Action" items={immediate} />
                 )}
                 {urgent.length > 0 && (
-                    <PrioritySection title="🟡 Urgent" items={urgent} />
+                    <PrioritySection title=" Urgent" items={urgent} />
                 )}
                 {scheduled.length > 0 && (
-                    <PrioritySection title="🟢 Scheduled" items={scheduled} />
+                    <PrioritySection title=" Scheduled" items={scheduled} />
                 )}
             </div>
         </motion.div>
@@ -95,7 +95,7 @@ function PrioritySection({ title, items }) {
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 fontSize: '18px',
                             }}>
-                                {m.urgency === 'immediate' ? '🔴' : m.urgency === 'urgent' ? '🟡' : '🟢'}
+                                {m.urgency === 'immediate' ? '' : m.urgency === 'urgent' ? '' : ''}
                             </div>
                             <div className="machine-item-info">
                                 <span className="machine-item-name">{getMachineShortLabel(m.machine_id)}</span>

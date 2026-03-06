@@ -268,7 +268,7 @@ export default function FactoryGraph({ graphData, onSelectMachine, selectedMachi
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'central')
             .attr('font-size', '16px')
-            .text(d => MACHINE_ICONS[d.machine_type] || '⚡');
+            .text(d => MACHINE_ICONS[d.machine_type] || '');
 
         // ID label
         node.append('text')
@@ -391,14 +391,14 @@ export default function FactoryGraph({ graphData, onSelectMachine, selectedMachi
                             onClick={() => setViewMode('factory')}
                             title="Factory Layout"
                         >
-                            🏭 Layout
+                             Layout
                         </button>
                         <button
                             className={`view-toggle-btn ${viewMode === 'graph' ? 'view-toggle-btn--active' : ''}`}
                             onClick={() => setViewMode('graph')}
                             title="Graph View"
                         >
-                            🔗 Graph
+                             Graph
                         </button>
                     </div>
                     <span className="panel-badge">{graphData?.nodes?.length || 0} machines</span>

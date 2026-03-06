@@ -89,7 +89,7 @@ export default function SimulatorPage() {
             <div className="grid-2">
                 {/* Controls */}
                 <div className="glass" style={{ padding: '28px' }}>
-                    <h3 className="section-title">⚡ Simulation Controls</h3>
+                    <h3 className="section-title">Simulation Controls</h3>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '16px' }}>
                         {/* Machine Select */}
@@ -185,7 +185,7 @@ export default function SimulatorPage() {
                                 disabled={!selectedId || simulating}
                                 style={{ flex: 1 }}
                             >
-                                {simulating ? 'Simulating…' : '⚡ Simulate Failure'}
+                                {simulating ? 'Simulating…' : 'Simulate Failure'}
                             </button>
                             {result && (
                                 <button className="btn-secondary" onClick={handleReset}>
@@ -198,7 +198,7 @@ export default function SimulatorPage() {
 
                 {/* Blast Radius Metrics */}
                 <div className="glass" style={{ padding: '28px' }}>
-                    <h3 className="section-title">💥 Failure Blast Radius</h3>
+                    <h3 className="section-title">Failure Blast Radius</h3>
 
                     <AnimatePresence mode="wait">
                         {result ? (
@@ -282,7 +282,7 @@ export default function SimulatorPage() {
                                 animate={{ opacity: 1 }}
                                 style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-tertiary)' }}
                             >
-                                <div style={{ fontSize: '48px', marginBottom: '12px' }}>💥</div>
+
                                 <p style={{ fontSize: '15px' }}>Run a simulation to see the failure blast radius</p>
                             </motion.div>
                         )}
@@ -299,7 +299,7 @@ export default function SimulatorPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <h3 className="section-title">🌊 Cascade Propagation Chain</h3>
+                    <h3 className="section-title">Cascade Propagation Chain</h3>
                     <div className="cascade-chain">
                         {/* Origin machine */}
                         <motion.div
