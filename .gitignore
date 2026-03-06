@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.env
+
+# Node
+node_modules/
+dist/
+
+# Models & data
+backend/models/*.joblib
+backend/data/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+nohup.out
