@@ -2,12 +2,11 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { useApi } from '../hooks/useApi'
 
 const NAV_ITEMS = [
-    { path: '/', label: 'Overview', icon: '📊' },
-    { path: '/factory-map', label: 'Factory Map', icon: '🏭' },
-    { path: '/simulator', label: 'Simulator', icon: '⚡' },
-    { path: '/maintenance', label: 'Maintenance', icon: '🔧' },
-    { path: '/forecast', label: 'Forecast', icon: '📈' },
-    { path: '/copilot', label: 'AI Copilot', icon: '🤖' },
+    { path: '/', label: 'Overview' },
+    { path: '/factory-map', label: 'Factory Map' },
+    { path: '/forecast', label: 'Forecast' },
+    { path: '/maintenance', label: 'Maintenance' },
+    { path: '/copilot', label: 'AI Copilot' },
 ]
 
 export default function Layout({ children }) {
@@ -29,8 +28,7 @@ export default function Layout({ children }) {
                             end={item.path === '/'}
                             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                         >
-                            <span>{item.icon}</span>
-                            <span>{item.label}</span>
+                            {item.label}
                         </NavLink>
                     ))}
                 </div>
